@@ -1,10 +1,5 @@
-# System Resource Monitor (SRM)
+# System Resource Monitor
 ### Real-Time OS Performance Monitoring & Historical Telemetry Analytics
-
-> **Academic Coursework Project:** Operating Systems (CS 5th Semester / 3rd Year B.Tech)  
-> **Authors:** Department of Computer Science & Engineering  
-> **Status:** Production-Ready Academic Demonstration  
-
 ---
 
 ## 1. Project Overview & Introduction
