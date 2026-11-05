@@ -15,6 +15,15 @@ export default defineConfig({
         target: 'ws://127.0.0.1:8000',
         ws: true,
         changeOrigin: true,
+        configure: (proxy) => {
+          proxy.on('error', (err) => {
+            // Suppress benign client disconnect / reload errors from cluttering console
+            if (err.code === 'ECONNRESET' || err.code === 'ECONNABORTED' || err.code === 'EPIPE') {
+              return;
+            }
+            console.error('[vite ws proxy error]:', err.message);
+          });
+        }
       }
     }
   }

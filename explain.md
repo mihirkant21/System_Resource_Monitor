@@ -477,9 +477,7 @@ System_Resource_Monitor/
 
 #### 36. `frontend/vite.config.js`
 - **Location:** `frontend/vite.config.js`
-- **Purpose:** Configures Vite with the `@vitejs/plugin-react` plugin and establishes proxy rules:
-  - Requests matching `/api` are proxied to `http://127.0.0.1:8000`.
-  - Requests matching `/ws` are proxied via WebSocket (`ws: true`) to `ws://127.0.0.1:8000`.
+- **Purpose:** Configures Vite with the `@vitejs/plugin-react` plugin, dev server port (5173), and proxy rules for `/api` and `/ws` with error suppression for client aborts (`ECONNRESET`, `ECONNABORTED`).
 
 #### 37. `frontend/tailwind.config.js` & `postcss.config.js`
 - **Location:** `frontend/tailwind.config.js` & `postcss.config.js`
@@ -522,7 +520,9 @@ System_Resource_Monitor/
 #### 44. `frontend/src/context/MetricsContext.jsx`
 - **Purpose:** Real-time state management and WebSocket client.
 - **Key Responsibilities:**
-  - Opens WebSocket to `/ws/metrics` with automatic reconnection logic if the connection is interrupted.
+  - **Smart WebSocket Routing:** Automatically detects development mode (Vite on port 5173) and connects directly to `ws://127.0.0.1:8000/ws/metrics`, bypassing Vite's Node.js `http-proxy` layer to prevent `ECONNABORTED`/`ECONNRESET` stream abort errors. In production, falls back cleanly to the host's `/ws/metrics`.
+  - **Resilient Lifecycle Management:** Implements `isMountedRef` and unmount cleanup handlers to prevent duplicate competing sockets during React StrictMode and page navigations.
+  - **Connection Heartbeat:** Sends a lightweight `ping` every 20 seconds to maintain persistent duplex streaming without idle socket drops.
   - Maintains `connectionStatus` (`connected`, `connecting`, `disconnected`).
   - Buffers the last 30 telemetry points into `recentHistory` for smooth, real-time live charting.
   - Stores `latestMetrics`, `systemInfo`, and `activeAlerts`.
